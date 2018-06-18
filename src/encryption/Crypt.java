@@ -17,7 +17,7 @@ abstract class Crypt
 
     private static final int DATA_OFFSET = 0;
     private static final int CIPHER_UPDATE_INTEGER_VALUE = 0;
-    private static final int CIPHER_DOFINAL_INTEGER_VALUE = 0;
+    private static final int CIPHER_DO_FINAL_INTEGER_VALUE = 0;
 
 
     protected static void crypt(InputStream in, OutputStream out, Cipher cipher) throws IOException, GeneralSecurityException
@@ -42,7 +42,7 @@ abstract class Crypt
 
         if (inLength > 0)
         {
-            outBytes = cipher.doFinal(inBytes, CIPHER_DOFINAL_INTEGER_VALUE, inLength);
+            outBytes = cipher.doFinal(inBytes, CIPHER_DO_FINAL_INTEGER_VALUE, inLength);
         }
         else
         {

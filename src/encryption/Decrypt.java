@@ -8,29 +8,31 @@ import java.util.logging.Level;
 
 public class Decrypt extends Crypt
 {
+    private static final int DATA_OFFSET = 0;
+
     public static void main(String[] args)
     {
-        try (DataInputStream in = new DataInputStream(new FileInputStream(args[1])))
+        try (DataInputStream dataInputStream = new DataInputStream(new FileInputStream(args[0])))
         {
-            int length = in.readInt();
+            int length = dataInputStream.readInt();
             byte[] wrappedKey = new byte[length];
-            in.read(wrappedKey, 0, length);
+            dataInputStream.read(wrappedKey, DATA_OFFSET, length);
 
             // unwrap with RSA private key
-            try (ObjectInputStream keyIn = new ObjectInputStream(new FileInputStream(args[3])))
+            try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(args[2])))
             {
-                Key privateKey = (Key) keyIn.readObject();
+                Key privateKey = (Key) objectInputStream.readObject();
 
                 Cipher cipher = Cipher.getInstance(Crypt.ALGORITHM, Crypt.PROVIDER);
                 cipher.init(Cipher.UNWRAP_MODE, privateKey);
                 Key key = cipher.unwrap(wrappedKey, Crypt.ENCRYPTION_STANDARD, Cipher.SECRET_KEY);
 
-                try (OutputStream out = new FileOutputStream(args[2]))
+                try (OutputStream outputStream = new FileOutputStream(args[1]))
                 {
                     cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD, Crypt.PROVIDER);
                     cipher.init(Cipher.DECRYPT_MODE, key);
 
-                    crypt(in, out, cipher);
+                    crypt(dataInputStream, outputStream, cipher);
                 }
             }
             catch (NoSuchAlgorithmException e)
@@ -51,7 +53,7 @@ public class Decrypt extends Crypt
             }
             catch (GeneralSecurityException e)
             {
-                LOGGER.log(Level.SEVERE, "Something went wrong in the security", e);
+                LOGGER.log(Level.SEVERE, "Something went wrong dataInputStream the security", e);
             }
             catch (ClassNotFoundException e)
             {

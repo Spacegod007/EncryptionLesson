@@ -13,23 +13,23 @@ public class KeyGen extends Crypt
     public static void main(String[] args) {
         try
         {
-                KeyPairGenerator pairgen = KeyPairGenerator.getInstance(Crypt.ALGORITHM, Crypt.PROVIDER);
+                KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(Crypt.ALGORITHM, Crypt.PROVIDER);
                 SecureRandom random = new SecureRandom();
-                pairgen.initialize(KEY_SIZE, random);
-                KeyPair keyPair = pairgen.generateKeyPair();
+                keyPairGenerator.initialize(KEY_SIZE, random);
+                KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-                try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(args[1])))
+                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(args[0])))
                 {
-                    out.writeObject(keyPair.getPublic());
+                    objectOutputStream.writeObject(keyPair.getPublic());
                 }
                 catch (IOException e)
                 {
                     LOGGER.log(Level.SEVERE, "Something went wrong while writing the public key", e);
                 }
 
-                try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(args[2])))
+                try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(args[1])))
                 {
-                    out.writeObject(keyPair.getPrivate());
+                    objectOutputStream.writeObject(keyPair.getPrivate());
                 }
                 catch (IOException e) {
                     LOGGER.log(Level.SEVERE, "Something went wrong while writing the private key", e);

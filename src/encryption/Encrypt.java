@@ -9,29 +9,29 @@ public class Encrypt extends Crypt
 {
     public static void main(String[] args) throws NoSuchAlgorithmException
     {
-        KeyGenerator keygen = KeyGenerator.getInstance(Crypt.ENCRYPTION_STANDARD);
-        SecureRandom random = new SecureRandom();
-        keygen.init(random);
-        SecretKey key = keygen.generateKey();
+        KeyGenerator keyGenerator = KeyGenerator.getInstance(Crypt.ENCRYPTION_STANDARD);
+        SecureRandom secureRandom = new SecureRandom();
+        keyGenerator.init(secureRandom);
+        SecretKey secretKey = keyGenerator.generateKey();
 
-        // wrap with RSA public key
-        try (ObjectInputStream keyIn = new ObjectInputStream(new FileInputStream(args[3])))
+        // wrap with RSA public secretKey
+        try (ObjectInputStream keyIn = new ObjectInputStream(new FileInputStream(args[2])))
         {
             Key publicKey = (Key) keyIn.readObject();
 
             Cipher cipher = Cipher.getInstance(Crypt.ALGORITHM, Crypt.PROVIDER);
             cipher.init(Cipher.WRAP_MODE, publicKey);
-            byte[] wrappedKey = cipher.wrap(key);
-            try (DataOutputStream out = new DataOutputStream(new FileOutputStream(args[2])))
+            byte[] wrappedKey = cipher.wrap(secretKey);
+            try (DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(args[1])))
             {
-                out.writeInt(wrappedKey.length);
-                out.write(wrappedKey);
+                dataOutputStream.writeInt(wrappedKey.length);
+                dataOutputStream.write(wrappedKey);
 
-                try (InputStream in = new FileInputStream(args[1]))
+                try (InputStream inputStream = new FileInputStream(args[0]))
                 {
                     cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD, Crypt.PROVIDER);
-                    cipher.init(Cipher.ENCRYPT_MODE, key);
-                    crypt(in, out, cipher);
+                    cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+                    crypt(inputStream, dataOutputStream, cipher);
                 }
             }
         }
@@ -45,7 +45,7 @@ public class Encrypt extends Crypt
         }
         catch (InvalidKeyException e)
         {
-            LOGGER.log(Level.SEVERE, "Attempted to use invalid key", e);
+            LOGGER.log(Level.SEVERE, "Attempted to use invalid secretKey", e);
         }
         catch (NoSuchPaddingException e)
         {
