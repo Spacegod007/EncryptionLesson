@@ -1,4 +1,4 @@
-package encryption;
+package cryption;
 
 import javax.crypto.Cipher;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.OutputStream;
 import java.security.GeneralSecurityException;
 import java.util.logging.Logger;
 
-abstract class Crypt
+public abstract class Crypt
 {
     protected static final Logger LOGGER = Logger.getLogger(Crypt.class.getName());
 

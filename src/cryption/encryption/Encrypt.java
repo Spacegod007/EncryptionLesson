@@ -1,4 +1,6 @@
-package encryption;
+package cryption.encryption;
+
+import cryption.Crypt;
 
 import javax.crypto.*;
 import java.io.*;
@@ -22,18 +24,8 @@ public class Encrypt extends Crypt
             Cipher cipher = Cipher.getInstance(Crypt.ALGORITHM, Crypt.PROVIDER);
             cipher.init(Cipher.WRAP_MODE, publicKey);
             byte[] wrappedKey = cipher.wrap(secretKey);
-            try (DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(args[1])))
-            {
-                dataOutputStream.writeInt(wrappedKey.length);
-                dataOutputStream.write(wrappedKey);
 
-                try (InputStream inputStream = new FileInputStream(args[0]))
-                {
-                    cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD, Crypt.PROVIDER);
-                    cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-                    crypt(inputStream, dataOutputStream, cipher);
-                }
-            }
+            writeFileContents(args[1], wrappedKey, args[0], cipher, secretKey);
         }
         catch (FileNotFoundException e)
         {
@@ -66,6 +58,27 @@ public class Encrypt extends Crypt
         catch (ClassNotFoundException e)
         {
             LOGGER.log(Level.SEVERE, "Required class not found", e);
+        }
+    }
+
+    private static void writeFileContents(String outputLocation, byte[] wrappedKey, String inputLocation, Cipher cipher, SecretKey secretKey) throws IOException, GeneralSecurityException
+    {
+        try (DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(outputLocation)))
+        {
+            dataOutputStream.writeInt(wrappedKey.length);
+            dataOutputStream.write(wrappedKey);
+
+            cryptData(inputLocation, cipher, dataOutputStream, secretKey);
+        }
+    }
+
+    private static void cryptData(String fileLocation, Cipher cipher, DataOutputStream dataOutputStream, SecretKey secretKey) throws IOException, GeneralSecurityException
+    {
+        try (InputStream inputStream = new FileInputStream(fileLocation))
+        {
+            cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD, Crypt.PROVIDER);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            crypt(inputStream, dataOutputStream, cipher);
         }
     }
 }
