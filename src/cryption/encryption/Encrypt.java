@@ -25,7 +25,7 @@ class Encrypt extends Crypt
             cipher.init(Cipher.WRAP_MODE, publicKey);
             byte[] wrappedKey = cipher.wrap(secretKey);
 
-            writeFileContents(args[1], wrappedKey, args[0], cipher, secretKey);
+            writeFileContents(args[1], wrappedKey, args[0], secretKey);
         }
         catch (FileNotFoundException e)
         {
@@ -61,22 +61,22 @@ class Encrypt extends Crypt
         }
     }
 
-    private static void writeFileContents(String outputLocation, byte[] wrappedKey, String inputLocation, Cipher cipher, SecretKey secretKey) throws IOException, GeneralSecurityException
+    private static void writeFileContents(String outputLocation, byte[] wrappedKey, String inputLocation, SecretKey secretKey) throws IOException, GeneralSecurityException
     {
         try (DataOutputStream dataOutputStream = new DataOutputStream(new FileOutputStream(outputLocation)))
         {
             dataOutputStream.writeInt(wrappedKey.length);
             dataOutputStream.write(wrappedKey);
 
-            cryptData(inputLocation, cipher, dataOutputStream, secretKey);
+            cryptData(inputLocation, dataOutputStream, secretKey);
         }
     }
 
-    private static void cryptData(String fileLocation, Cipher cipher, DataOutputStream dataOutputStream, SecretKey secretKey) throws IOException, GeneralSecurityException
+    private static void cryptData(String fileLocation, DataOutputStream dataOutputStream, SecretKey secretKey) throws IOException, GeneralSecurityException
     {
         try (InputStream inputStream = new FileInputStream(fileLocation))
         {
-            cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD, Crypt.PROVIDER);
+            Cipher cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD, Crypt.PROVIDER);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             crypt(inputStream, dataOutputStream, cipher);
         }

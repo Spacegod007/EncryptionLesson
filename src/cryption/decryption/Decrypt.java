@@ -51,15 +51,15 @@ class Decrypt extends Crypt
             cipher.init(Cipher.UNWRAP_MODE, privateKey);
             Key key = cipher.unwrap(wrappedKey, Crypt.ENCRYPTION_STANDARD, Cipher.SECRET_KEY);
 
-            writeDecryptedData(dataSaveLocation, cipher, key, dataInputStream);
+            writeDecryptedData(dataSaveLocation, key, dataInputStream);
         }
     }
 
-    private static void writeDecryptedData(String location, Cipher cipher, Key key, DataInputStream dataInputStream) throws IOException, GeneralSecurityException
+    private static void writeDecryptedData(String location, Key key, DataInputStream dataInputStream) throws IOException, GeneralSecurityException
     {
         try (OutputStream outputStream = new FileOutputStream(location))
         {
-            cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD, Crypt.PROVIDER);
+            Cipher cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD, Crypt.PROVIDER);
             cipher.init(Cipher.DECRYPT_MODE, key);
 
             crypt(dataInputStream, outputStream, cipher);
