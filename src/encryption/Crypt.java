@@ -5,19 +5,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.GeneralSecurityException;
+import java.util.logging.Logger;
 
-public class Crypt
+abstract class Crypt
 {
+    protected static final Logger LOGGER = Logger.getLogger(Crypt.class.getName());
 
-
-    private Crypt() {}
+    protected static final String ALGORITHM = "RSA";
+    protected static final String PROVIDER = "BC";
+    protected static final String ENCRYPTION_STANDARD = "DES";
 
     private static final int DATA_OFFSET = 0;
     private static final int CIPHER_UPDATE_INTEGER_VALUE = 0;
     private static final int CIPHER_DOFINAL_INTEGER_VALUE = 0;
 
 
-    public static void crypt(InputStream in, OutputStream out, Cipher cipher) throws IOException, GeneralSecurityException
+    protected static void crypt(InputStream in, OutputStream out, Cipher cipher) throws IOException, GeneralSecurityException
     {
         int blockSize = cipher.getBlockSize();
         int outputSize = cipher.getOutputSize(blockSize);
