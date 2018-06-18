@@ -8,7 +8,7 @@ import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.util.logging.Level;
 
-public class Decrypt extends Crypt
+class Decrypt extends Crypt
 {
     private static final int DATA_OFFSET = 0;
 

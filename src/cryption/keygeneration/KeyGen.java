@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 import java.security.*;
 import java.util.logging.Level;
 
-public class KeyGen extends Crypt
+class KeyGen extends Crypt
 {
     private static final int KEY_SIZE = 128;
 
