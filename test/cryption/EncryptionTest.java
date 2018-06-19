@@ -15,11 +15,13 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class EncryptionTest
 {
-    private static final String PUBLIC_KEY_FILE = "public.key";
-    private static final String PRIVATE_KEY_FILE = "private.key";
-    private static final String ORIGINAL_TEST_FILE = "plaintextFile";
-    private static final String ENCRYPTED_TEST_FILE = "encryptedFile";
-    private static final String DECRYPTED_TEST_FILE = "decryptedFile";
+    private static final String TEST_DIRECTORY = "testresources\\";
+
+    private static final String PUBLIC_KEY_FILE = TEST_DIRECTORY + "public.key";
+    private static final String PRIVATE_KEY_FILE = TEST_DIRECTORY + "private.key";
+    private static final String ORIGINAL_TEST_FILE = TEST_DIRECTORY + "plaintextFile";
+    private static final String ENCRYPTED_TEST_FILE = TEST_DIRECTORY + "encryptedFile";
+    private static final String DECRYPTED_TEST_FILE = TEST_DIRECTORY + "decryptedFile";
 
     private static final Path ORIGINAL_TEST_FILE_PATH = new File(ORIGINAL_TEST_FILE).toPath();
     private static final Path ENCRYPTED_TEST_FILE_PATH = new File(ENCRYPTED_TEST_FILE).toPath();
