@@ -12,7 +12,6 @@ public abstract class Crypt
     protected static final Logger LOGGER = Logger.getLogger(Crypt.class.getName());
 
     protected static final String ALGORITHM = "RSA";
-    protected static final String PROVIDER = "BC";
     protected static final String ENCRYPTION_STANDARD = "DES";
 
     private static final int DATA_OFFSET = 0;

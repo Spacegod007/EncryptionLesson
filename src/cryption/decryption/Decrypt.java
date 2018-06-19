@@ -47,7 +47,7 @@ public class Decrypt extends Crypt
         {
             Key privateKey = (Key) objectInputStream.readObject();
 
-            Cipher cipher = Cipher.getInstance(Crypt.ALGORITHM, Crypt.PROVIDER);
+            Cipher cipher = Cipher.getInstance(Crypt.ALGORITHM);
             cipher.init(Cipher.UNWRAP_MODE, privateKey);
             Key key = cipher.unwrap(wrappedKey, Crypt.ENCRYPTION_STANDARD, Cipher.SECRET_KEY);
 
@@ -59,7 +59,7 @@ public class Decrypt extends Crypt
     {
         try (OutputStream outputStream = new FileOutputStream(location))
         {
-            Cipher cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD, Crypt.PROVIDER);
+            Cipher cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD);
             cipher.init(Cipher.DECRYPT_MODE, key);
 
             crypt(dataInputStream, outputStream, cipher);

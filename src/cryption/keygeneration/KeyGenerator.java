@@ -10,50 +10,36 @@ import java.util.logging.Level;
 
 public class KeyGenerator extends Crypt
 {
-    private static final int KEY_SIZE = 128;
+    private static final int KEY_SIZE = 1024;
 
     public static void main(String[] args)
     {
         try
         {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(Crypt.ALGORITHM, Crypt.PROVIDER);
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance(Crypt.ALGORITHM);
             SecureRandom random = new SecureRandom();
             keyPairGenerator.initialize(KEY_SIZE, random);
             KeyPair keyPair = keyPairGenerator.generateKeyPair();
 
-            writePublicKey(args[0], keyPair.getPublic());
-            writePrivateKey(args[1], keyPair.getPrivate());
+            writeKey(args[0], keyPair.getPublic());
+            writeKey(args[1], keyPair.getPrivate());
 
-        } catch (NoSuchAlgorithmException e)
+        }
+        catch (NoSuchAlgorithmException e)
         {
-            LOGGER.log(Level.CONFIG, "Invalid algorithm selected", e);
-        } catch (NoSuchProviderException e)
-        {
-            LOGGER.log(Level.CONFIG, "Invalid provider selected", e);
+            LOGGER.log(Level.SEVERE, "Invalid algorithm selected", e);
         }
     }
 
-    private static void writePrivateKey(String location, PrivateKey privateKey)
+    private static void writeKey(String location, Key key)
     {
         try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(location)))
         {
-            objectOutputStream.writeObject(privateKey);
+            objectOutputStream.writeObject(key);
         }
         catch (IOException e)
         {
             LOGGER.log(Level.SEVERE, "Something went wrong while writing the private key", e);
-        }
-    }
-
-    private static void writePublicKey(String location, PublicKey publicKey)
-    {
-        try (ObjectOutputStream objectOutputStream = new ObjectOutputStream(new FileOutputStream(location)))
-        {
-            objectOutputStream.writeObject(publicKey);
-        }
-        catch (IOException e)
-        {
-            LOGGER.log(Level.SEVERE, "Something went wrong while writing the public key", e);
         }
     }
 }

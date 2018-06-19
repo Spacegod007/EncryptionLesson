@@ -21,7 +21,7 @@ public class Encrypt extends Crypt
         {
             Key publicKey = (Key) keyIn.readObject();
 
-            Cipher cipher = Cipher.getInstance(Crypt.ALGORITHM, Crypt.PROVIDER);
+            Cipher cipher = Cipher.getInstance(Crypt.ALGORITHM);
             cipher.init(Cipher.WRAP_MODE, publicKey);
             byte[] wrappedKey = cipher.wrap(secretKey);
 
@@ -43,13 +43,9 @@ public class Encrypt extends Crypt
         {
             LOGGER.log(Level.WARNING, "Error with padding", e);
         }
-        catch (NoSuchProviderException e)
-        {
-            LOGGER.log(Level.CONFIG, "Invalid provider selected", e);
-        }
         catch (IllegalBlockSizeException e)
         {
-            LOGGER.log(Level.CONFIG, "Invalid block size detected", e);
+            LOGGER.log(Level.SEVERE, "Invalid block size detected", e);
         }
         catch (GeneralSecurityException e)
         {
@@ -76,7 +72,7 @@ public class Encrypt extends Crypt
     {
         try (InputStream inputStream = new FileInputStream(fileLocation))
         {
-            Cipher cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD, Crypt.PROVIDER);
+            Cipher cipher = Cipher.getInstance(Crypt.ENCRYPTION_STANDARD);
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             crypt(inputStream, dataOutputStream, cipher);
         }
