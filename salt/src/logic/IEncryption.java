@@ -1,7 +1,6 @@
 package logic;
 
 public interface IEncryption {
-    byte[] encryption(byte[] message, char[] password);
-
-    byte[] decryprion(byte[] encrypted, char[] password);
+    byte[] encryption(String message, char[] password);
+    byte[] decryprion(String path, char[] password);
 }

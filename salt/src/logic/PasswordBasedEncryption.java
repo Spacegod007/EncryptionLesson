@@ -115,7 +115,7 @@ public class PasswordBasedEncryption
         }
     }
 
-    public static byte[] decryprion(byte[] encrypted, char[] password)
+    static byte[] decryprion(byte[] encrypted, char[] password)
     {
         try
         {
