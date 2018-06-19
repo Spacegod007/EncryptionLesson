@@ -19,6 +19,7 @@ public abstract class Crypt
     private static final int CIPHER_UPDATE_INTEGER_VALUE = 0;
     private static final int CIPHER_DO_FINAL_INTEGER_VALUE = 0;
 
+    protected Crypt() {}
 
     protected static void crypt(InputStream in, OutputStream out, Cipher cipher) throws IOException, GeneralSecurityException
     {

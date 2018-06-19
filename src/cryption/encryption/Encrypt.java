@@ -7,7 +7,7 @@ import java.io.*;
 import java.security.*;
 import java.util.logging.Level;
 
-class Encrypt extends Crypt
+public class Encrypt extends Crypt
 {
     public static void main(String[] args) throws NoSuchAlgorithmException
     {
