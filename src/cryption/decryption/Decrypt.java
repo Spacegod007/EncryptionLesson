@@ -18,6 +18,7 @@ public class Decrypt extends Crypt
         {
             int length = dataInputStream.readInt();
             byte[] wrappedKey = new byte[length];
+            //noinspection ResultOfMethodCallIgnored
             dataInputStream.read(wrappedKey, DATA_OFFSET, length);
 
             unwrapFile(args[2], wrappedKey, args[1], dataInputStream);

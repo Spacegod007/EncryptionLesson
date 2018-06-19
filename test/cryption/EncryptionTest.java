@@ -13,7 +13,7 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-public class EncryptionTest
+class EncryptionTest
 {
     private static final String PUBLIC_KEY_FILE = "public.key";
     private static final String PRIVATE_KEY_FILE = "private.key";
@@ -26,7 +26,7 @@ public class EncryptionTest
     private static final Path DECRYPTED_TEST_FILE_PATH = new File(DECRYPTED_TEST_FILE).toPath();
 
     @Test
-    public void fullTest() throws Exception
+    void fullTest() throws Exception
     {
         KeyGenerator.main(getAsArray(PUBLIC_KEY_FILE, PRIVATE_KEY_FILE));
         Encrypt.main(getAsArray(ORIGINAL_TEST_FILE, ENCRYPTED_TEST_FILE, PUBLIC_KEY_FILE));

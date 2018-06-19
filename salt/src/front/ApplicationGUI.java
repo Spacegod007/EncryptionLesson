@@ -59,6 +59,6 @@ public class ApplicationGUI extends Application
 
     private void decryptMessage()
     {
-        textArea.setText(encryption.decryprion(passwordField.getText().toCharArray()));
+        textArea.setText(encryption.decryption(passwordField.getText().toCharArray()));
     }
 }

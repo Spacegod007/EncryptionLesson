@@ -27,7 +27,7 @@ public class Encryptor implements IEncryption
     }
 
     @Override
-    public String decryprion(char[] password)
+    public String decryption(char[] password)
     {
         byte[] encryptedData = new byte[0];
 
@@ -40,6 +40,6 @@ public class Encryptor implements IEncryption
             LOGGER.log(Level.SEVERE, "Something went wrong while reading the encrypted data");
         }
 
-        return new String(PasswordBasedEncryption.decryprion(encryptedData, password));
+        return new String(PasswordBasedEncryption.decryption(encryptedData, password));
     }
 }
