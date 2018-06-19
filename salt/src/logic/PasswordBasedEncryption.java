@@ -91,7 +91,7 @@ public class PasswordBasedEncryption {
         }
     }
 
-    public static byte[] decryprion(byte[] encrypted, char[] password) {
+    static byte[] decryprion(byte[] encrypted, char[] password) {
         try {
             byte[] salt = Arrays.copyOfRange(encrypted, 0, SALT_SIZE_IN_BITS / 8);
             byte[] ciphertext = Arrays.copyOfRange(encrypted, salt.length, encrypted.length);
