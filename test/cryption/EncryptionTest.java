@@ -6,8 +6,10 @@ import cryption.keygeneration.KeyGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -28,7 +30,7 @@ class EncryptionTest
     private static final Path DECRYPTED_TEST_FILE_PATH = new File(DECRYPTED_TEST_FILE).toPath();
 
     @Test
-    void fullTest() throws Exception
+    void fullTest() throws NoSuchAlgorithmException, IOException
     {
         KeyGenerator.main(getAsArray(PUBLIC_KEY_FILE, PRIVATE_KEY_FILE));
         Encrypt.main(getAsArray(ORIGINAL_TEST_FILE, ENCRYPTED_TEST_FILE, PUBLIC_KEY_FILE));
