@@ -11,9 +11,13 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-public class PasswordBasedEncryption
+class PasswordBasedEncryption
 {
+    private static final Logger LOGGER = Logger.getLogger(PasswordBasedEncryption.class.getName());
+
     private static final String KEY_DERIVATION_FUNCTION = "PBKDF2WithHmacSHA256";
     private static final String ENCRYPTION_ALGORITHM = "AES";
     private static final String TRANSFORMATION = "AES/GCM/NoPadding";
@@ -57,24 +61,20 @@ public class PasswordBasedEncryption
             Cipher cipher = Cipher.getInstance(TRANSFORMATION);
             cipher.init(mode, key, gcmSpec);
             return cipher;
-        } catch (
-                NoSuchAlgorithmException |
-                        NoSuchPaddingException |
-                        InvalidKeyException |
-                        InvalidAlgorithmParameterException ex
-                )
+        }
+        catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException ex)
         {
             throw new AssertionError(ex);
-        } finally
+        }
+        finally
         {
             try
             {
                 key.destroy();
             }
-
-            // Don't let exceptions escape from finally-blocks.
             catch (DestroyFailedException ex)
             {
+                LOGGER.log(Level.SEVERE, "Failed to destroy the key", ex);
             }
         }
     }
@@ -92,13 +92,18 @@ public class PasswordBasedEncryption
 
             keyBytes = pbeKey.getEncoded();
             return new SecretKeySpec(keyBytes, ENCRYPTION_ALGORITHM);
-        } catch (
-                NoSuchAlgorithmException |
-                        InvalidKeySpecException ex
-                )
+        }
+        catch (NoSuchAlgorithmException ex)
         {
+            LOGGER.log(Level.SEVERE, "Algorithm not found", ex);
             throw new AssertionError(ex);
-        } finally
+        }
+        catch (InvalidKeySpecException ex)
+        {
+            LOGGER.log(Level.SEVERE, "Invalid key spec specified", ex);
+            throw new AssertionError(ex);
+        }
+        finally
         {
             try
             {
@@ -109,8 +114,10 @@ public class PasswordBasedEncryption
 
                 if (pbeKey != null && !pbeKey.isDestroyed())
                     pbeKey.destroy();
-            } catch (DestroyFailedException ex)
+            }
+            catch (DestroyFailedException ex)
             {
+                LOGGER.log(Level.SEVERE, "Failed to destroy key", ex);
             }
         }
     }
@@ -123,9 +130,7 @@ public class PasswordBasedEncryption
             byte[] ciphertext = Arrays.copyOfRange(encrypted, salt.length, encrypted.length);
 
             Cipher cipher = initCipher(Cipher.DECRYPT_MODE, password, salt);
-            byte[] message = cipher.doFinal(ciphertext);
-
-            return message;
+            return cipher.doFinal(ciphertext);
         }
 
         // Block sizes are a property of block ciphers, not stream ciphers.
@@ -134,7 +139,7 @@ public class PasswordBasedEncryption
             throw new AssertionError(ex);
         } catch (BadPaddingException e)
         {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "");
         }
         return new byte[0];
     }
