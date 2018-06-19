@@ -35,7 +35,7 @@ class PasswordBasedEncryption
     {
         try
         {
-            byte[] salt = generateIV();
+            byte[] salt = generateSalt();
             Cipher cipher = initCipher(Cipher.ENCRYPT_MODE, password, salt);
             byte[] cipherText = cipher.doFinal(message);
             byte[] result = new byte[salt.length + cipherText.length];
@@ -139,7 +139,7 @@ class PasswordBasedEncryption
         return new byte[0];
     }
 
-    private static byte[] generateIV()
+    private static byte[] generateSalt()
     {
         try
         {
