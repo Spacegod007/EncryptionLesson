@@ -51,7 +51,4 @@ public class KeyGenerator
         keyPairGenerator.initialize(1024, random);
         return keyPairGenerator.generateKeyPair();
     }
-/*
-
-    */
 }
