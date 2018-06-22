@@ -10,6 +10,8 @@ public class KeyGenerator
 {
     private static final Logger LOGGER = Logger.getLogger(KeyGenerator.class.getName());
 
+    private static final String PUBLIC_KEY_FILE_EXTENSION = ".pk";
+    private static final String PRIVATE_KEY_FILE_EXTENSION = ".spk";
     private static final String ALGORITHM = "SHA512withRSA";
     private static final String KEY_PAIR_ALGORITHM = "RSA";
     private static final String SECURE_RANDOM_ALGORITHM = "SHA1PRNG";
@@ -48,7 +50,7 @@ public class KeyGenerator
 
         try
         {
-            Files.write(new File(publicKeyLocation).toPath(), keyPair.getPublic().getEncoded());
+            Files.write(new File(publicKeyLocation + PUBLIC_KEY_FILE_EXTENSION).toPath(), keyPair.getPublic().getEncoded());
         }
         catch (IOException e)
         {
@@ -81,7 +83,7 @@ public class KeyGenerator
                 signature.update(buffer, DATA_OFFSET, readByte);
             }
 
-            Files.write(new File(privateKeyLocation).toPath(), signature.sign());
+            Files.write(new File(privateKeyLocation + PRIVATE_KEY_FILE_EXTENSION).toPath(), signature.sign());
         }
         catch (FileNotFoundException e)
         {
