@@ -12,8 +12,6 @@ public class KeyVerifier
 {
     private static final Logger LOGGER = Logger.getLogger(KeyVerifier.class.getName());
 
-    private static final String KEY_ALGORITHM = "RSA";
-    private static final String ALGORITHM = "SHA512withRSA";
     private static final int DATA_OFFSET = 0;
 
     private final String encryptedDataLocation;
@@ -59,7 +57,7 @@ public class KeyVerifier
         }
         catch (IOException e)
         {
-            LOGGER.log(Level.SEVERE, "Something went wrong while interacting with key file");
+            LOGGER.log(Level.SEVERE, "Something went wrong while interacting with key file", e);
         }
     }
 
@@ -93,7 +91,7 @@ public class KeyVerifier
 
     private Signature verifyPublicKey(PublicKey publicKey) throws NoSuchAlgorithmException, InvalidKeyException
     {
-        Signature signature = Signature.getInstance(ALGORITHM);
+        Signature signature = Signature.getInstance(KeyValues.SIGNATURE_ALGORITHM);
         signature.initVerify(publicKey);
         return signature;
     }
@@ -101,7 +99,7 @@ public class KeyVerifier
     private PublicKey getPublicKey() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException
     {
         byte[] keyBytes = Files.readAllBytes(new File(keyLocation).toPath());
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+        KeyFactory keyFactory = KeyFactory.getInstance(KeyValues.KEY_ALGORITHM);
         return keyFactory.generatePublic(new X509EncodedKeySpec(keyBytes));
     }
 

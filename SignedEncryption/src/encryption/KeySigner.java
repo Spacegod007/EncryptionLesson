@@ -12,10 +12,9 @@ public class KeySigner
 {
     private static final Logger LOGGER = Logger.getLogger(KeySigner.class.getName());
 
-    private static final String ALGORITHM = "SHA512withRSA";
     private static final int DATA_OFFSET = 0;
-    private static final String KEY_ALGORITHM = "RSA";
 
+    private final String encryptedDataLocation;
     private final String privateKeyLocation;
     private final String dataLocation;
 
@@ -23,7 +22,7 @@ public class KeySigner
     {
         try
         {
-            new KeySigner(args[0], args[1]);
+            new KeySigner(args[0], args[1], args[2]);
         }
         catch (NoSuchAlgorithmException e)
         {
@@ -43,20 +42,22 @@ public class KeySigner
         }
     }
 
-    private KeySigner(String privateKeyLocation, String dataLocation) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException
+    private KeySigner(String dataLocation, String encryptedDataLocation, String privateKeyLocation) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException
     {
+        this.encryptedDataLocation = encryptedDataLocation;
         this.privateKeyLocation = privateKeyLocation;
         this.dataLocation = dataLocation;
 
         PrivateKey privateKey = null;
 
+//        privateKey = getKey();
         try
         {
             privateKey = retrieveEncodedPrivateKey();
         }
         catch (IOException e)
         {
-            LOGGER.log(Level.SEVERE, "Something went wrong while reading the private key data");
+            LOGGER.log(Level.SEVERE, "Something went wrong while interacting with the file", e);
         }
 
         if (privateKey != null)
@@ -68,14 +69,34 @@ public class KeySigner
     private PrivateKey retrieveEncodedPrivateKey() throws IOException, InvalidKeySpecException, NoSuchAlgorithmException
     {
         byte[] bytes = Files.readAllBytes(new File(privateKeyLocation).toPath());
-        KeyFactory keyFactory = KeyFactory.getInstance(KEY_ALGORITHM);
+        KeyFactory keyFactory = KeyFactory.getInstance(KeyValues.KEY_ALGORITHM);
         return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(bytes));
+    }
 
+    private PrivateKey getKey()
+    {
+        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(new File(privateKeyLocation))))
+        {
+            return (PrivateKey) objectInputStream.readObject();
+        }
+        catch (FileNotFoundException e)
+        {
+            LOGGER.log(Level.SEVERE, "Key file could not be found", e);
+        }
+        catch (IOException e)
+        {
+            LOGGER.log(Level.SEVERE, "Something went wrong while interacting with the file", e);
+        }
+        catch (ClassNotFoundException e)
+        {
+            LOGGER.log(Level.SEVERE, "Incompatible class", e);
+        }
+        return null;
     }
 
     private void signKey(PrivateKey privateKey) throws NoSuchAlgorithmException, InvalidKeyException, SignatureException
     {
-        Signature signature = Signature.getInstance(ALGORITHM);
+        Signature signature = Signature.getInstance(KeyValues.SIGNATURE_ALGORITHM);
         signature.initSign(privateKey);
 
         try (FileInputStream fileInputStream = new FileInputStream(new File(dataLocation));
@@ -89,7 +110,7 @@ public class KeySigner
                 signature.update(buffer, DATA_OFFSET, readByte);
             }
 
-            Files.write(new File(privateKeyLocation).toPath(), signature.sign());
+            Files.write(new File(encryptedDataLocation).toPath(), signature.sign());
         }
         catch (FileNotFoundException e)
         {
